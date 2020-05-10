@@ -212,10 +212,13 @@ async function createContainer(containerName, imageName, containerPort) {
     env: EnvVariables,
     ExposedPorts: { },
     HostConfig: {
-      Memory: 200 * mb,
-      MemorySwap: 2000 * mb,
+      // Memory: 200 * mb,
+      KernelMemory: 1200 * mb,
+      MemorySwap: -1,
+      // MemorySwap: 2000 * mb,
       MemorySwappiness: 50,
-      MemoryReservation: 100 * mb,
+      // MemoryReservation: 100 * mb,
+      OomKillDisable: true,
       CpuPeriod: 100000,
       CpuQuota: 100000 * cpuPercent,
       PortBindings: {  }
