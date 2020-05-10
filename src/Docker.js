@@ -264,7 +264,7 @@ async function pullImage(tag) {
       docker.modem.followProgress(stream, onFinished, onProgress);
 
       function onFinished(err, output) {
-        console.log('Pull Complete!');
+        console.log('Pull Complete!\n');
         resolve();
       }
 
@@ -336,7 +336,7 @@ async function pullImages() {
 }
 
 async function initialize() {
-  console.log('Initalizing Docker Containers/Images!')
+  console.log('Initalizing Docker Containers/Images!');
   const pulledNew = await pullImages();
   if(!pulledNew) {
     await loadContainers();

@@ -4,7 +4,7 @@ const envFilePath = 'D:\\Self Taught\\React\\PortfolioSite\\.env';
 
 const EnvVariables = [];
 
-const localPath = path.join(__dirname, '.env');
+const localPath = path.join(process.cwd(), '.env');
 let localEnv = fs.readFileSync(localPath);
 localEnv = localEnv.toString();
 localEnv = localEnv.split(/\n|\n\r/g);
