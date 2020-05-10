@@ -119,6 +119,11 @@ function loadImages() {
       for (let index = 0; index < images.length; index++) {
         const imageInfo = images[index];
 
+        if(!imageInfo.RepoTags) {
+          await removeImage(imageInfo.Id);
+          continue;
+        }
+
         const latestForRepo = activeImages[imageInfo.RepoTags[0]];
         if(!latestForRepo) {
           activeImages[imageInfo.RepoTags[0]] = imageInfo;
