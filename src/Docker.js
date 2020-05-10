@@ -211,6 +211,8 @@ async function createContainer(containerName, imageName, containerPort) {
     env: EnvVariables,
     ExposedPorts: { },
     HostConfig: {
+      Memory: 150000,
+      MemoryReservation: 75000,
       CpuPeriod: 100000,
       CpuQuota: 100000 * cpuPercent,
       PortBindings: {  }
