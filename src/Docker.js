@@ -8,14 +8,14 @@ const EnvVariables = require('./LoadEnv');
  */
 const config = {
   dev: {
-    tag: 'lgd:latest-dev',
+    tag: `${process.env.DOCKER_USERNAME}/lgd:latest-dev`,
     names: {
-      lgd0: 6003,
-      lgd1: 6004
+      lgd2: 6003,
+      lgd3: 6004
     }
   },
   master: {
-    tag: 'lgd:latest',
+    tag: `${process.env.DOCKER_USERNAME}/lgd:latest`,
     names: {
       lgd0: 6001,
       lgd1: 6002
@@ -168,14 +168,37 @@ async function clearOutOfDateContainers() {
       continue;
     }
 
+    // Container referencing an image that has no tag.
+    // All images must be tagged.
+    if(!activeImages[container.Image].RepoTags) {
+      await removeContainer(container.Id);
+      continue;
+    }
+
     // Container is referencing an older Image.
     if(activeImages[container.Image].Id !== container.ImageID) {
       await removeContainer(container.Id);
       const port = container.Ports[1].PublicPort;
       await createContainer(container.Names[0].substring(1), container.Image, port);
+      continue;
+    }
+
+    let usingConfigTag = false;
+    for(let i = 0; i < configKeys.length; ++i) {
+      if(config[configKeys[i]].names[container.Names[0].substring(1)]) {
+        if(config[configKeys[i]].tag !== activeImages[container.Image].RepoTags[0]) {
+          usingConfigTag = true;
+          break;
+        }
+      }
+    }
+
+    if(usingConfigTag) {
+      console.log(`${container.Id} is using name in config!`)
+      await removeContainer(container.Id);
     }
   }
-  console.log('Done Clearing Out Of Date Containers!');
+  console.log('Done Clearing Out Of Date Containers!\n');
 }
 
 async function createContainer(containerName, imageName, containerPort) {
@@ -207,11 +230,13 @@ async function createContainer(containerName, imageName, containerPort) {
  */
 async function updateContainers(branch) {
   if(typeof activeImages[branch.tag] === 'undefined') {
+    console.log(`Updating Containers for ${branch.tag}!`);
     console.log(`Image ${branch.tag} did not exist!`);
+    console.log('Done Updating Containers!\n');
     return;
   }
 
-  console.log("Updating Containers!");
+  console.log(`Updating Containers for ${branch.tag}!`);
 
   let containersToCreate = Object.assign({}, branch.names);
   for (let index = 0; index < activeContainers.length; index++) {
@@ -259,7 +284,7 @@ async function pullImage(tag) {
 
   let pulledNew = true;
   await new Promise((resolve, reject) => {
-    docker.pull(`${process.env.DOCKER_USERNAME}/${tag}`, { authconfig: auth }, function (err, stream) {
+    docker.pull(tag, { authconfig: auth }, function (err, stream) {
       if(err) {
         console.error(err);
         pulledNew = false;
@@ -333,9 +358,8 @@ async function pullImage(tag) {
  */
 async function pullImages() {
   let pulledNew = false;
-  const imagesToPull = Object.keys(config);
-  for(let i = 0; i < imagesToPull.length; ++i) {
-    const branch = config[imagesToPull[i]].tag;
+  for(let i = 0; i < configKeys.length; ++i) {
+    const branch = config[configKeys[i]].tag;
     pulledNew = await pullImage(branch) || pulledNew;
   }
 

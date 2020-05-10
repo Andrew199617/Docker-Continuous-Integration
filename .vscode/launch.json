@@ -14,6 +14,13 @@
         {
             "type": "node",
             "request": "launch",
+            "name": "Debug Server Local",
+            "runtimeExecutable": "node",
+            "args": ["server.js", "local"],
+        },
+        {
+            "type": "node",
+            "request": "launch",
             "name": "Debug Docker",
             "runtimeExecutable": "node",
             "args": ["Docker.js"],
