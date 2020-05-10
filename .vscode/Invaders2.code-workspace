@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"path": "..\\static\\images\\Invaders2"
+		},
+		{
+			"path": "..\\shaders"
+		},
+		{
+			"path": "..\\phasergames\\Invaders2"
+		}
+	],
+	"settings": {}
+}

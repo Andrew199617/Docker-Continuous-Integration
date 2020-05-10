@@ -1,0 +1,17 @@
+{
+  "name": "dockerwebhook",
+  "version": "1.0.0",
+  "description": "Listen to docker and update image on server with no downtime.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "docker"
+  ],
+  "author": "LearnGameDevelopment",
+  "license": "ISC",
+  "dependencies": {
+    "dockerode": "^3.1.0"
+  }
+}

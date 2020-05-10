@@ -1,0 +1,101 @@
+// Place your settings in this file to overwrite default and user settings.
+{
+    // Quickly document code.
+    "docthis.includeMemberOfOnClassMembers": false,
+    "docthis.includeDescriptionTag": true,
+    "docthis.includeMemberOfOnInterfaceMembers": false,
+
+    // Editor settings.
+    "editor.snippetSuggestions": "inline",
+    "editor.wordWrap": "on",
+    "editor.fontSize": 16,
+    "editor.tabSize": 2,
+
+    // These files shouldn't show up in sidebar they aren't needed or don't exist.
+    "files.exclude": {
+        ".next/**": true,
+        "backups/**": true,
+        "node_modules/**": true,
+        "phasergames/**": true,
+        "ios/**": true,
+        "android/**": true,
+        "shaders/**": true
+    },
+    "search.exclude": {
+        "**/logs": true,
+        "**/UnityLoader.js": true,
+        "package-lock.json": true
+    },
+    "files.trimTrailingWhitespace": true,
+
+    "lgd.options": {
+        "generateTypings": true,
+        "maintainHierarchy": true
+    },
+
+    // How we compile our less files.
+    "less.compile": {
+        "compress":  true,  // true => remove surplus whitespace
+        "sourceMap": false,  // true => generate source maps (.css.map files)
+        "main": ["${workspaceRoot}\\styles\\Main.less"]
+    },
+    "terminal.integrated.shell.windows": "C:\\Windows\\Sysnative\\cmd.exe",
+    // Useful for finding problems in log files quickly.
+    "logFileHighlighter.customPatterns": [
+        {
+            "pattern": "PM \\||AM \\|",
+            "foreground": "#59e259"
+        },
+        {
+            "pattern": "CLIENT|wait|Email sent:|(?<=\\|)[\\w ]+:",
+            "foreground": "#00BFFF",
+        },
+        {
+            "pattern": "event|^\\s+\\w*:",
+            "foreground": "#9932CC"
+        },
+        {
+            "pattern": "BUILDUNITY:|--",
+            "foreground": "#9932CC"
+        },
+        {
+            "pattern": "\\w+@\\w+\\.com|(http|https):\\\\\\\\(\\w+\\.){0,1}\\w+\\.\\w+.*?\\s{1}",
+            "foreground": "#55BBCC"
+        }
+    ],
+    "editor.tokenColorCustomizations": {
+        "textMateRules": [
+            {
+                "scope": "log.date",
+                "settings": {
+                    "foreground": "#59e259",
+                    "fontStyle": ""
+                }
+            },
+            {
+                "scope": "comment.todo",
+                "settings": {
+                    "foreground": "#EE82EE"
+                }
+            },
+            {
+                "scope": "comment.issue",
+                "settings": {
+                    "foreground": "#5555EE"
+                }
+            },
+            {
+                "scope": "variable.react",
+                "settings": {
+                    "foreground": "#9370DB"
+                }
+            },
+            {
+                "scope": "variable.next",
+                "settings": {
+                    "foreground": "#9370DB"
+                }
+            }
+        ]
+    },
+}

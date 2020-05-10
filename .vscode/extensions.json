@@ -1,0 +1,12 @@
+{
+  "recommendations": [
+    "dbaeumer.vscode-eslint",
+    "mrcrowl.easy-less",
+    "joelday.docthis",
+    "mikestead.dotenv",
+    "donjayamanne.githistory",
+    "emilast.logfilehighlighter",
+    "learn-game-development.js-syntax-extension",
+    "learn-game-development.js-snippet-extension"
+  ]
+}
