@@ -25,6 +25,12 @@ async function initializeDocker() {
           return;
         }
 
+        if(body.push_data.pusher !== process.env.DOCKER_USERNAME) {
+          res.statusCode = 500;
+          res.end();
+          return;
+        }
+
         console.log('Parsed Push from Docker!');
         res.statusCode = 200;
         res.end();
