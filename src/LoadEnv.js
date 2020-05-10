@@ -20,6 +20,9 @@ for (let index = 0; index < localEnv.length; index++) {
     if(typeof localEnv[index] === 'object' && !localEnv[index]) {
       break loop;
     }
+    else if(index >= localEnv.length) {
+      break loop;
+    }
   }
   const key = localEnv[index].replace(/=.*/, '');
   const value = localEnv[index].replace(/.*=/, '');
@@ -31,6 +34,9 @@ for (let index = 0; index < splitEnv.length; index++) {
   while(splitEnv[index].trim() === '') {
     index++;
     if(typeof splitEnv[index] === 'object' && !splitEnv[index]) {
+      break loop;
+    }
+    else if(index >= splitEnv.length) {
       break loop;
     }
   }
