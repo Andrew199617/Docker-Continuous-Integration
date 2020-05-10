@@ -203,7 +203,7 @@ async function clearOutOfDateContainers() {
 
 async function createContainer(containerName, imageName, containerPort) {
   const port = `${containerPort}/tcp`;
-  const cpuPercent = 0.18;
+  const cpuPercent = 0.20;
   const mb = 1000000;
 
   const options = {
@@ -213,8 +213,8 @@ async function createContainer(containerName, imageName, containerPort) {
     ExposedPorts: { },
     HostConfig: {
       Memory: 200 * mb,
-      MemorySwap: 1200 * mb,
-      MemorySwappiness: 10,
+      MemorySwap: 2000 * mb,
+      MemorySwappiness: 50,
       MemoryReservation: 100 * mb,
       CpuPeriod: 100000,
       CpuQuota: 100000 * cpuPercent,
