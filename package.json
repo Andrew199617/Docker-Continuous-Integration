@@ -4,7 +4,7 @@
   "description": "Listen to docker and update image on server with no downtime.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node server.js start"
   },
   "keywords": [
     "docker"

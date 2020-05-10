@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const envFilePath = 'D:\\Self Taught\\React\\PortfolioSite\\.env';
+const envFilePath = process.argv[3] || 'D:\\Self Taught\\React\\PortfolioSite\\.env';
 
 const EnvVariables = [];
 
