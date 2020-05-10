@@ -1,7 +1,7 @@
 const http = require('http');
-const Docker = require('./Docker');
+const Docker = require('./src/Docker');
 
-require('./LoadEnv');
+require('./src/LoadEnv');
 
 const PORT = 8080;
 const REPO_NAME = 'LearnGameDevelopment';
@@ -10,7 +10,7 @@ async function initializeDocker() {
   await Docker.initialize();
 
   if(process.argv[2] && process.argv[2] === 'local') {
-    require('./local');
+    require('./src/Local');
   }
 
   http
