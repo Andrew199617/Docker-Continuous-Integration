@@ -352,6 +352,7 @@ async function initialize() {
 module.exports = {
   initialize,
   pullImage,
+  pullImages,
   loadImages,
   loadContainers,
   updateContainers,

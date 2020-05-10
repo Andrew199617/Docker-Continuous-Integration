@@ -7,10 +7,12 @@ const PORT = 8080;
 const REPO_NAME = 'LearnGameDevelopment';
 
 async function initializeDocker() {
-  await Docker.initialize();
 
   if(process.argv[2] && process.argv[2] === 'local') {
-    require('./src/Local');
+    await require('./src/Local')();
+  }
+  else {
+    await Docker.initialize();
   }
 
   http

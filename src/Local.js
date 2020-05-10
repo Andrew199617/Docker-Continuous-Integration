@@ -6,10 +6,10 @@ const maxTimeout = 30000;
 /**
 * @description Run locally to update container if a new build happens.
 */
-async function execute() {
+async function execute(pulledNew) {
   await Docker.loadContainers();
   const newImageAdded = await Docker.loadImages();
-  if(newImageAdded) {
+  if(newImageAdded || pulledNew) {
     timeout = 2000;
     await Docker.updateContainers(Docker.config.master);
     await Docker.updateContainers(Docker.config.dev);
@@ -20,4 +20,9 @@ async function execute() {
   timeout = Math.min(timeout + 2000, maxTimeout);
 }
 
-execute();
+async function run() {
+  const pulledNew = await Docker.pullImages();
+  execute(pulledNew);
+}
+
+module.exports = run;
