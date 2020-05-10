@@ -22,12 +22,14 @@ async function initializeDocker() {
         const body = JSON.parse(chunk);
 
         if(body.repository.name !== REPO_NAME) {
+          console.error('Wrong repo name! Actual:', body.repository.name, 'Expected:', REPO_NAME);
           res.statusCode = 404;
           res.end();
           return;
         }
 
         if(body.push_data.pusher !== process.env.DOCKER_USERNAME) {
+          console.error('Wrong pusher! Actual:', body.push_data.pusher, 'Expected:', process.env.DOCKER_USERNAME);
           res.statusCode = 500;
           res.end();
           return;
