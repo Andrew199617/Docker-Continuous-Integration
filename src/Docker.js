@@ -235,6 +235,8 @@ async function updateContainers(branch) {
     const container = containersToCreate[index];
     await createContainer(container, branch.tag, branch.names[container]);
   }
+
+  console.log('Done Updating Containers!\n');
 }
 
 /**
