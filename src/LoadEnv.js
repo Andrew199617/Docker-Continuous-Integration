@@ -7,11 +7,11 @@ const EnvVariables = [];
 const localPath = path.join(process.cwd(), '.env');
 let localEnv = fs.readFileSync(localPath);
 localEnv = localEnv.toString();
-localEnv = localEnv.split(/\n|\n\r/g);
+localEnv = localEnv.split(/\n|\r\n/g);
 
 const file = fs.readFileSync(envFilePath);
 const envFile = file.toString();
-const splitEnv = envFile.split(/\n|\n\r/g);
+const splitEnv = envFile.split(/\n|\r\n/g);
 
 loop:
 for (let index = 0; index < localEnv.length; index++) {
