@@ -203,13 +203,18 @@ async function clearOutOfDateContainers() {
 
 async function createContainer(containerName, imageName, containerPort) {
   const port = `${containerPort}/tcp`;
+  const cpuPercent = 0.18;
 
   const options = {
     Image: imageName,
     name: containerName,
     env: EnvVariables,
     ExposedPorts: { },
-    HostConfig: { PortBindings: {  } }
+    HostConfig: {
+      CpuPeriod: 100000,
+      CpuQuota: 100000 * cpuPercent,
+      PortBindings: {  }
+    }
   };
   // options.ExposedPorts[port] = {};
   options.HostConfig.PortBindings['3000/tcp'] = [{ HostPort: port }];
