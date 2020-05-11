@@ -15,7 +15,7 @@ const config = {
     }
   },
   master: {
-    tag: `${process.env.DOCKER_USERNAME}/lgd:latest`,
+    tag: `${process.env.DOCKER_USERNAME}/lgd:release`,
     names: {
       lgd0: 6001,
       lgd1: 6002
