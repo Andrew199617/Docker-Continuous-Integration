@@ -10,14 +10,14 @@ const config = {
   dev: {
     tag: `${process.env.DOCKER_USERNAME}/lgd:latest-dev`,
     names: {
-      lgd2: 6003
+      // lgd2: 6003
     },
     envVariables: EnvVariables.DevEnvVariables
   },
   master: {
     tag: `${process.env.DOCKER_USERNAME}/lgd:release`,
     names: {
-      lgd0: 6001,
+      // lgd0: 6001,
       lgd1: 6002
     },
     envVariables: EnvVariables.ReleaseEnvVariables
@@ -249,9 +249,9 @@ async function createContainer(containerName, imageName, containerPort) {
     env: envVariables,
     ExposedPorts: { },
     HostConfig: {
-      Memory: 500 * mb,
-      KernelMemory: 1000 * mb,
-      MemoryReservation: 250 * mb,
+      // Memory: 500 * mb,
+      // KernelMemory: 1000 * mb,
+      // MemoryReservation: 250 * mb,
       // CpuPeriod: 100000,
       // CpuQuota: 100000 * 0.8,
       PortBindings: {  }
