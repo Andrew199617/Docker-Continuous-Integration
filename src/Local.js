@@ -21,8 +21,7 @@ async function execute(pulledNew) {
 }
 
 async function run() {
-  const pulledNew = await Docker.pullImages();
-  execute(pulledNew);
+  execute(false);
 }
 
 module.exports = run;

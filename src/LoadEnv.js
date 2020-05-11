@@ -29,7 +29,6 @@ let devEnv = fs.readFileSync(devPath);
 devEnv = devEnv.toString();
 devEnv = devEnv.split(/\n|\r\n/g);
 
-
 const ReleaseEnvVariables = [];
 
 const releasePath = path.join(process.cwd(), 'release.env');
@@ -56,7 +55,7 @@ function ParseEnvFile(envFile, array) {
   array.push('NODE_ENV=production');
 }
 
-ParseEnvFile(localEnv, DevEnvVariables);
+ParseEnvFile(devEnv, DevEnvVariables);
 ParseEnvFile(releaseEnv, ReleaseEnvVariables);
 
 

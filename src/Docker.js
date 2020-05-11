@@ -216,13 +216,33 @@ async function clearOutOfDateContainers() {
   console.log('Done Clearing Out Of Date Containers!\n');
 }
 
+/**
+ * @description Create a container and log output waiting
+ * for a success indication in logs of container.
+ * @param {string} containerName name of container to build.
+ * @param {string} imageName image to use to create container.
+ * @param {number} containerPort port the container will use.
+ * @returns {boolean} Whether the container succeeded in building.
+ */
 async function createContainer(containerName, imageName, containerPort) {
   const configInfo = getConfigForContainerName(containerName);
 
   const envVariables = configInfo ? configInfo.envVariables : [];
   const port = `${containerPort}/tcp`;
-  const cpuPercent = 0.18;
+  const cpuPercent = 0.20;
   const mb = 1000000;
+
+  // We need more process power when we build next.js
+  // after building we can limit memory and cpu.
+  const releaseOptions = {
+    Memory: 250 * mb,
+    KernelMemory: 1000 * mb,
+    MemorySwap: -1,
+    MemorySwappiness: 1,
+    MemoryReservation: 150 * mb,
+    CpuPeriod: 100000,
+    CpuQuota: 100000 * cpuPercent,
+  }
 
   const options = {
     Image: imageName,
@@ -230,25 +250,51 @@ async function createContainer(containerName, imageName, containerPort) {
     env: envVariables,
     ExposedPorts: { },
     HostConfig: {
-      Memory: 200 * mb,
+      Memory: 500 * mb,
       KernelMemory: 1000 * mb,
-      MemorySwap: -1,
-      // MemorySwap: 1000 * mb,
-      MemorySwappiness: 50,
-      MemoryReservation: 150 * mb,
-      // OomKillDisable: true,
+      MemoryReservation: 250 * mb,
       CpuPeriod: 100000,
-      CpuQuota: 100000 * cpuPercent,
+      CpuQuota: 100000 * 0.8,
       PortBindings: {  }
     }
   };
-  // options.ExposedPorts[port] = {};
   options.HostConfig.PortBindings['3000/tcp'] = [{ HostPort: port }];
 
   try {
     console.log(`Creating ${containerName} based off ${imageName} on Port ${port}!`)
     const newContainer = await docker.createContainer(options);
-    newContainer.start();
+    await newContainer.start();
+
+    var logOpts = {
+      stdout: true,
+      stderr: true,
+      follow: true
+    };
+    const stream = await newContainer.logs(logOpts);
+    await new Promise((resolve, reject) => {
+      const timeout = 5 * 60 * 1000;
+      const interval = setTimeout(() => {
+        reject('Timeout container did not start properly');
+      }, timeout);
+
+      function onData(data) {
+        const logLine = data.trim()
+          .split(/\n|\r\n/)
+          .map(val => `\x1b[34m${containerName}: \x1b[0m${val.substring(8)}`)
+          .join('\n');
+        console.log(logLine);
+        if(logLine.includes('Server Started')) {
+          interval.unref();
+          stream.off('data', onData);
+          resolve();
+        }
+      }
+
+      stream.setEncoding('utf8');
+      stream.on('data', onData);
+    });
+
+    await newContainer.update(releaseOptions);
   }
   catch (err) {
     console.log('ERROR:', err);
@@ -392,7 +438,13 @@ async function pullImages() {
   let pulledNew = false;
   for(let i = 0; i < configKeys.length; ++i) {
     const branch = config[configKeys[i]].tag;
-    pulledNew = await pullImage(branch) || pulledNew;
+    try {
+      pulledNew = await pullImage(branch) || pulledNew;
+    }
+    catch(err) {
+      console.error('Error occurred pulling: ', branch);
+      console.error(err);
+    }
   }
 
   return pulledNew;
