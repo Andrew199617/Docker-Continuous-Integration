@@ -4,7 +4,9 @@ const Docker = require('./src/Docker');
 require('./src/LoadEnv');
 
 const PORT = 8080;
-const REPO_NAME = 'LearnGameDevelopment';
+
+// Name of Repo on Docker Hub.
+const REPO_NAME = 'lgd';
 
 async function initializeDocker() {
 
