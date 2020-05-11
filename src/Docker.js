@@ -12,14 +12,16 @@ const config = {
     names: {
       lgd2: 6003,
       lgd3: 6004
-    }
+    },
+    envVariables: EnvVariables.DevEnvVariables
   },
   master: {
     tag: `${process.env.DOCKER_USERNAME}/lgd:release`,
     names: {
       lgd0: 6001,
       lgd1: 6002
-    }
+    },
+    envVariables: EnvVariables.ReleaseEnvVariables
   }
 }
 Object.freeze(config);
@@ -44,6 +46,28 @@ const activeImages = {
 
 const States = {
   Exited: 'exited'
+}
+
+/**
+ * @description Get the config info for a container name.
+ * @param {string} name lgd2 will get dev config.
+ * @returns {{
+  tag: string,
+  names: {
+      [name: string]: number;
+  };
+  envVariables: any[];
+ }}
+ */
+function getConfigForContainerName(name) {
+  for(let i = 0; i < configKeys.length; ++i) {
+    if(config[configKeys[i]].names[name]) {
+      return config[configKeys[i]];
+    }
+  }
+
+  console.log('Could not find config info for:', name);
+  return null;
 }
 
 async function removeContainer(id) {
@@ -183,18 +207,9 @@ async function clearOutOfDateContainers() {
       continue;
     }
 
-    let usingConfigTag = false;
-    for(let i = 0; i < configKeys.length; ++i) {
-      if(config[configKeys[i]].names[container.Names[0].substring(1)]) {
-        if(config[configKeys[i]].tag !== activeImages[container.Image].RepoTags[0]) {
-          usingConfigTag = true;
-          break;
-        }
-      }
-    }
-
-    if(usingConfigTag) {
-      console.log(`${container.Id} is using name in config!`)
+    const configInfo = getConfigForContainerName(container.Names[0].substring(1));
+    if(configInfo && configInfo.tag !== activeImages[container.Image].RepoTags[0]) {
+      console.log(`${container.Id} is using name in config but has wrong image!`)
       await removeContainer(container.Id);
     }
   }
@@ -202,6 +217,9 @@ async function clearOutOfDateContainers() {
 }
 
 async function createContainer(containerName, imageName, containerPort) {
+  const configInfo = getConfigForContainerName(containerName);
+
+  const envVariables = configInfo ? configInfo.envVariables : [];
   const port = `${containerPort}/tcp`;
   const cpuPercent = 0.18;
   const mb = 1000000;
@@ -209,7 +227,7 @@ async function createContainer(containerName, imageName, containerPort) {
   const options = {
     Image: imageName,
     name: containerName,
-    env: EnvVariables,
+    env: envVariables,
     ExposedPorts: { },
     HostConfig: {
       Memory: 200 * mb,
