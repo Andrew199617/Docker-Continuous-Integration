@@ -284,14 +284,15 @@ async function updateContainers(branch) {
 async function pullImage(tag) {
   let branch = null;
   for(let i = 0; i < configKeys.length; ++i) {
-    if(config[configKeys[i]].tag === tag) {
+    if(config[configKeys[i]].tag === tag
+      || config[configKeys[i]].tag === `${process.env.DOCKER_USERNAME}/${tag}`) {
       branch = config[configKeys[i]];
       break;
     }
   }
 
   if(!branch) {
-    console.error('Could not find tag!');
+    console.error(`Could not find tag: ${tag}!`);
     return;
   }
 
@@ -324,7 +325,7 @@ async function pullImage(tag) {
 
         if(event.progress) {
           if(compoundOutput.includes(event.status)) {
-            if(lastLineWasProgress && process.stdout.moveCursor) {
+            if(lastLineWasProgress) {
               console.clear();
               console.log('Pulling from', tag);
             }
