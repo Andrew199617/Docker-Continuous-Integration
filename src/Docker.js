@@ -301,9 +301,11 @@ async function createContainer(containerName, imageName, containerPort) {
     });
 
     if(succeeded) {
+      console.log('Build Succeeded, updating options!');
       await newContainer.update(releaseOptions);
     }
     else {
+      console.log('Build Failed, removing container!');
       await removeContainer(newContainer.id);
     }
   }
