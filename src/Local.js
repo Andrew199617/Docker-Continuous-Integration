@@ -21,6 +21,7 @@ async function execute(pulledNew) {
 }
 
 async function run() {
+  process.env.LOCAL = true;
   execute(false);
 }
 

@@ -10,7 +10,7 @@ const config = {
   dev: {
     tag: `${process.env.DOCKER_USERNAME}/lgd:latest-dev`,
     names: {
-      // lgd2: 6003
+      lgd2: 6003
     },
     envVariables: EnvVariables.DevEnvVariables
   },
@@ -110,11 +110,10 @@ function loadContainers() {
 
 async function removeImage(id) {
   for (const container in activeContainers) {
-    if(container.ImageID === id) {
-      await removeContainer(container.Id);
-      return;
+    if(activeContainers[container].ImageID === id) {
+      await removeContainer(activeContainers[container].Id);
     }
-  };
+  }
 
   try {
     console.log('Removed Image', id);
@@ -270,11 +269,16 @@ async function createContainer(containerName, imageName, containerPort) {
       follow: true
     };
     const stream = await newContainer.logs(logOpts);
-    await new Promise((resolve, reject) => {
+    const succeeded = await new Promise((resolve, reject) => {
+
+      function failed() {
+        interval.unref();
+        stream.off('data', onData);
+        resolve(false);
+      }
+
       const timeout = 5 * 60 * 1000;
-      const interval = setTimeout(() => {
-        reject('Timeout container did not start properly');
-      }, timeout);
+      const interval = setTimeout(failed, timeout);
 
       function onData(data) {
         const logLine = data.trim()
@@ -285,7 +289,10 @@ async function createContainer(containerName, imageName, containerPort) {
         if(logLine.includes('Server Started')) {
           interval.unref();
           stream.off('data', onData);
-          resolve();
+          resolve(true);
+        }
+        else if(logLine.includes('Next Build Failed')) {
+          failed();
         }
       }
 
@@ -293,7 +300,12 @@ async function createContainer(containerName, imageName, containerPort) {
       stream.on('data', onData);
     });
 
-    await newContainer.update(releaseOptions);
+    if(succeeded) {
+      await newContainer.update(releaseOptions);
+    }
+    else {
+      await removeContainer(newContainer.id);
+    }
   }
   catch (err) {
     console.log('ERROR:', err);
@@ -321,7 +333,8 @@ async function updateContainers(branch) {
       continue;
     }
 
-    if(activeImages[container.Image].Id === container.ImageID) {
+    if(activeImages[container.Image].Id === container.ImageID
+      && !process.env.LOCAL) {
       const name = container.Names[0].substring(1);
       console.log(name, ':', container.Id, ': Is already up to date!');
       delete containersToCreate[name];
