@@ -251,8 +251,8 @@ async function createContainer(containerName, imageName, containerPort) {
       // Memory: 500 * mb,
       // KernelMemory: 1000 * mb,
       // MemoryReservation: 250 * mb,
-      // CpuPeriod: 100000,
-      // CpuQuota: 100000 * 0.8,
+      CpuPeriod: 100000,
+      CpuQuota: 100000 * 0.8,
       PortBindings: {  }
     }
   };
