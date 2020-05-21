@@ -10,15 +10,20 @@ const config = {
   dev: {
     tag: `${process.env.DOCKER_USERNAME}/lgd:latest-dev`,
     names: {
-      lgd2: 6003
+      dev0: 6006,
+      dev1: 6006,
+      dev2: 6007
     },
     envVariables: EnvVariables.DevEnvVariables
   },
   master: {
     tag: `${process.env.DOCKER_USERNAME}/lgd:release`,
     names: {
-      // lgd0: 6001,
-      lgd1: 6002
+      lgd0: 6001,
+      lgd1: 6002,
+      lgd2: 6003,
+      lgd3: 6004,
+      lgd4: 6005
     },
     envVariables: EnvVariables.ReleaseEnvVariables
   }
@@ -286,7 +291,7 @@ async function createContainer(containerName, imageName, containerPort) {
           .map(val => `\x1b[34m${containerName}: \x1b[0m${val.substring(8)}`)
           .join('\n');
         console.log(logLine);
-        if(logLine.includes('Server Started')) {
+        if(logLine.includes('LGD is running on port')) {
           interval.unref();
           stream.off('data', onData);
           resolve(true);
