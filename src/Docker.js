@@ -265,7 +265,7 @@ async function createContainer(containerName, imageName, containerPort) {
       PortBindings: {  }
     }
   };
-  options.HostConfig.PortBindings['3000/tcp'] = [{ HostPort: port }];
+  options.HostConfig.PortBindings['5000/tcp'] = [{ HostPort: port }];
 
   try {
     console.log(`Creating ${containerName} based off ${imageName} on Port ${port}!`)
