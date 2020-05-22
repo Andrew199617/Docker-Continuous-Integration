@@ -278,7 +278,7 @@ async function createContainer(containerName, imageName, containerPort) {
 
       function failed() {
         interval.unref();
-        stream.off('data', onData);
+        // stream.off('data', onData);
         resolve(false);
       }
 
@@ -293,7 +293,7 @@ async function createContainer(containerName, imageName, containerPort) {
         console.log(logLine);
         if(logLine.includes('LGD is running on port')) {
           interval.unref();
-          stream.off('data', onData);
+          // stream.off('data', onData);
           resolve(true);
         }
         else if(logLine.includes('Next Build Failed')) {
