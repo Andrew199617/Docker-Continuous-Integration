@@ -26,6 +26,10 @@ const config = {
       lgd4: 6005
     },
     envVariables: EnvVariables.ReleaseEnvVariables
+  },
+  server: {
+    tag: `${process.env.DOCKER_USERNAME}/lgd:server`,
+    names: {}
   }
 }
 Object.freeze(config);
