@@ -3,14 +3,15 @@ const Docker = require('./src/Docker');
 
 require('./src/LoadEnv');
 
-const PORT = 8080;
+const PORT = 8081;
 
 // Name of Repo on Docker Hub.
 const REPO_NAME = 'lgd';
 
 async function initializeDocker() {
 
-  if(process.argv[2] && process.argv[2] === 'local') {
+  if(process.argv[2]
+    && (process.argv[2] === 'local' || process.argv[2] === '-l')) {
     await require('./src/Local')();
   }
   else {

@@ -7,6 +7,10 @@ const maxTimeout = 30000;
 * @description Run locally to update container if a new build happens.
 */
 async function execute(pulledNew) {
+  if(process.argv[3] && process.argv[3] === '-p') {
+    await Docker.pullImages();
+  }
+
   await Docker.loadContainers();
   const newImageAdded = await Docker.loadImages();
   if(newImageAdded || pulledNew) {
