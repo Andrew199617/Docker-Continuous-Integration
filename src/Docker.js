@@ -11,8 +11,8 @@ const config = {
     tag: `${process.env.DOCKER_USERNAME}/lgd:latest-dev`,
     names: {
       dev0: 6006,
-      dev1: 6006,
-      dev2: 6007
+      dev1: 6007,
+      dev2: 6008
     },
     envVariables: EnvVariables.DevEnvVariables
   },
