@@ -411,7 +411,7 @@ async function pullImage(tag) {
 
   let pulledNew = true;
   await new Promise((resolve, reject) => {
-    docker.pull(tag, { authconfig: auth }, function (err, stream) {
+    docker.pull(branch.tag, { authconfig: auth }, function (err, stream) {
       if(err) {
         console.error(err);
         pulledNew = false;
