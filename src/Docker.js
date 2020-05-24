@@ -283,7 +283,7 @@ async function createContainer(containerName, imageName, containerPortBindings) 
 
   if(typeof configInfo.volumeBinds !== 'undefined') {
     console.log('Using Volumes', configInfo.volumeBinds);
-    options.binds = configInfo.volumeBinds;
+    options.Binds = configInfo.volumeBinds;
   }
 
   try {
