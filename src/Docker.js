@@ -37,7 +37,6 @@ const config = {
         '6010/tcp': [{ HostIp: '172.31.18.195', HostPort: '80/tcp' }],
         '6011/tcp': [{ HostIp: '172.31.30.198', HostPort: '80/tcp' }],
         '6012/tcp': [
-          // { HostPort: '443/tcp' }
           { HostIp: '172.31.18.195', HostPort: '443/tcp' },
           { HostIp: '172.31.30.198', HostPort: '443/tcp' }
         ]
