@@ -277,7 +277,7 @@ async function createContainer(containerName, imageName, containerPortBindings) 
   };
 
   try {
-    console.log(`Creating ${containerName} based off ${imageName} with PortBindings ${containerPortBindings}!`)
+    console.log(`Creating ${containerName} based off ${imageName} with PortBindings`, containerPortBindings)
     const newContainer = await docker.createContainer(options);
     await newContainer.start();
 
