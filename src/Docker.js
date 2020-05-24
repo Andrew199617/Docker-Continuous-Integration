@@ -36,7 +36,11 @@ const config = {
         '6011/tcp': [{ HostIp: '172.31.30.198', HostPort: '80/tcp' }],
         '6012/tcp': [{ HostIp: '0.0.0.0', HostPort: '443/tcp' }]
       }
-    }
+    },
+    volumeBinds: [
+      'nginx:/home/lgd/nginx/',
+      'certificates:/home/lgd/certificates/'
+    ]
   }
 }
 Object.freeze(config);
@@ -71,6 +75,7 @@ const States = {
   names: {
       [name: string]: number;
   };
+  volumeBinds: string[];
   envVariables: any[];
  }}
  */
@@ -275,6 +280,10 @@ async function createContainer(containerName, imageName, containerPortBindings) 
       PortBindings: containerPortBindings
     }
   };
+
+  if(typeof configInfo.volumeBinds !== 'undefined') {
+    options.binds = configInfo.volumeBinds;
+  }
 
   try {
     console.log(`Creating ${containerName} based off ${imageName} with PortBindings`, containerPortBindings)
