@@ -33,7 +33,10 @@ const config = {
     tag: `${process.env.DOCKER_USERNAME}/lgd:server`,
     names: {
       server: {
-        '6012/tcp': [{ HostPort: '443/tcp' }],
+        '6012/tcp': [
+          { HostIp: '172.31.18.195', HostPort: '443/tcp' },
+          { HostIp: '172.31.30.198', HostPort: '443/tcp' }
+        ],
         '8082/tcp': [{ HostIp: '172.31.18.195', HostPort: '8082/tcp' }],
         '6010/tcp': [{ HostIp: '172.31.18.195', HostPort: '80/tcp' }],
         '6011/tcp': [{ HostIp: '172.31.30.198', HostPort: '80/tcp' }],
@@ -283,7 +286,7 @@ async function createContainer(containerName, imageName, containerPortBindings) 
 
   if(typeof configInfo.volumeBinds !== 'undefined') {
     console.log('Using Volumes', configInfo.volumeBinds);
-    options.Binds = configInfo.volumeBinds;
+    options.HostConfig.Binds = configInfo.volumeBinds;
   }
 
   try {
