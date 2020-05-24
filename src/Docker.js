@@ -397,7 +397,8 @@ async function pullImage(tag) {
   let branch = null;
   for(let i = 0; i < configKeys.length; ++i) {
     if(config[configKeys[i]].tag === tag
-      || config[configKeys[i]].tag === `${process.env.DOCKER_USERNAME}/${tag}`) {
+      || config[configKeys[i]].tag === `${process.env.DOCKER_USERNAME}/${tag}`
+      || config[configKeys[i]].tag === `${process.env.DOCKER_USERNAME}/lgd:${tag}`) {
       branch = config[configKeys[i]];
       break;
     }
