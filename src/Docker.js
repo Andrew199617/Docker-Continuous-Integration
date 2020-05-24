@@ -14,6 +14,7 @@ const config = {
       dev1: { '5000/tcp': [{ HostPort: '6007/tcp' }] },
       dev2: { '5000/tcp': [{ HostPort: '6008/tcp' }] }
     },
+    containerStartedText: 'LGD is running on port',
     envVariables: EnvVariables.DevEnvVariables
   },
   master: {
@@ -25,6 +26,7 @@ const config = {
       lgd3: { '5000/tcp': [{ HostPort: '6004/tcp' }] },
       lgd4: { '5000/tcp': [{ HostPort: '6005/tcp' }] }
     },
+    containerStartedText: 'LGD is running on port',
     envVariables: EnvVariables.ReleaseEnvVariables
   },
   server: {
@@ -40,7 +42,8 @@ const config = {
     volumeBinds: [
       'nginx:/home/lgd/nginx/',
       'certificates:/home/lgd/certificates/'
-    ]
+    ],
+    containerStartedText: 'Server is listening on '
   }
 }
 Object.freeze(config);
@@ -76,6 +79,7 @@ const States = {
       [name: string]: number;
   };
   volumeBinds: string[];
+  containerStartedText: string;
   envVariables: any[];
  }}
  */
@@ -249,7 +253,7 @@ async function createContainer(containerName, imageName, containerPortBindings) 
   const configInfo = getConfigForContainerName(containerName);
 
   const envVariables = configInfo ? configInfo.envVariables : [];
-  const cpuPercent = 0.20;
+  const cpuPercent = 0.22;
   const mb = 1000000;
 
   // We need more process power when we build next.js
@@ -263,7 +267,6 @@ async function createContainer(containerName, imageName, containerPortBindings) 
     CpuPeriod: 100000,
     CpuQuota: 100000 * cpuPercent,
     RestartPolicy: { "unless-stopped": true }
-    // Binds: 'Z' Will allow sharing volume.
   }
 
   const options = {
@@ -272,9 +275,6 @@ async function createContainer(containerName, imageName, containerPortBindings) 
     env: envVariables,
     ExposedPorts: { },
     HostConfig: {
-      // Memory: 500 * mb,
-      // KernelMemory: 1000 * mb,
-      // MemoryReservation: 250 * mb,
       CpuPeriod: 100000,
       CpuQuota: 100000,
       PortBindings: containerPortBindings
@@ -313,8 +313,11 @@ async function createContainer(containerName, imageName, containerPortBindings) 
           .split(/\n|\r\n/)
           .map(val => `\x1b[34m${containerName}: \x1b[0m${val.substring(8)}`)
           .join('\n');
+
         console.log(logLine);
-        if(logLine.includes('LGD is running on port')) {
+
+        // Container is ready.
+        if(logLine.includes(configInfo.containerStartedText)) {
           interval.unref();
           // stream.off('data', onData);
           resolve(true);
