@@ -10,26 +10,33 @@ const config = {
   dev: {
     tag: `${process.env.DOCKER_USERNAME}/lgd:latest-dev`,
     names: {
-      dev0: 6006,
-      dev1: 6007,
-      dev2: 6008
+      dev0: { '5000/tcp': [{ HostPort: '6006/tcp' }] },
+      dev1: { '5000/tcp': [{ HostPort: '6007/tcp' }] },
+      dev2: { '5000/tcp': [{ HostPort: '6008/tcp' }] }
     },
     envVariables: EnvVariables.DevEnvVariables
   },
   master: {
     tag: `${process.env.DOCKER_USERNAME}/lgd:release`,
     names: {
-      lgd0: 6001,
-      lgd1: 6002,
-      lgd2: 6003,
-      lgd3: 6004,
-      lgd4: 6005
+      lgd0: { '5000/tcp': [{ HostPort: '6001/tcp' }] },
+      lgd1: { '5000/tcp': [{ HostPort: '6002/tcp' }] },
+      lgd2: { '5000/tcp': [{ HostPort: '6003/tcp' }] },
+      lgd3: { '5000/tcp': [{ HostPort: '6004/tcp' }] },
+      lgd4: { '5000/tcp': [{ HostPort: '6005/tcp' }] }
     },
     envVariables: EnvVariables.ReleaseEnvVariables
   },
   server: {
     tag: `${process.env.DOCKER_USERNAME}/lgd:server`,
-    names: {}
+    names: {
+      server: {
+        '8082/tcp': [{ HostPort: '8082/tcp' }],
+        '6010/tcp': [{ HostPort: '172.31.18.195:80/tcp' }],
+        '6011/tcp': [{ HostPort: '172.31.30.198:80/tcp' }],
+        '6012/tcp': [{ HostPort: '0.0.0.0:443/tcp' }]
+      }
+    }
   }
 }
 Object.freeze(config);
@@ -209,8 +216,10 @@ async function clearOutOfDateContainers() {
     // Container is referencing an older Image.
     if(activeImages[container.Image].Id !== container.ImageID) {
       await removeContainer(container.Id);
-      const port = container.Ports[1].PublicPort;
-      await createContainer(container.Names[0].substring(1), container.Image, port);
+      const containerName = container.Names[0].substring(1);
+      const portBindings = container.Ports.splice(1);
+      console.log(`Recreating ${containerName} with Ports ${portBindings}`);
+      await createContainer(containerName, container.Image, portBindings);
       continue;
     }
 
@@ -228,14 +237,14 @@ async function clearOutOfDateContainers() {
  * for a success indication in logs of container.
  * @param {string} containerName name of container to build.
  * @param {string} imageName image to use to create container.
- * @param {number} containerPort port the container will use.
+ * @param {{[ container: string ] : string}} containerPortBindings ports the container will use.
  * @returns {boolean} Whether the container succeeded in building.
  */
-async function createContainer(containerName, imageName, containerPort) {
+async function createContainer(containerName, imageName, containerPortBindings) {
   const configInfo = getConfigForContainerName(containerName);
 
   const envVariables = configInfo ? configInfo.envVariables : [];
-  const port = `${containerPort}/tcp`;
+  // const port = `${containerPort}/tcp`;
   const cpuPercent = 0.20;
   const mb = 1000000;
 
@@ -249,6 +258,8 @@ async function createContainer(containerName, imageName, containerPort) {
     MemoryReservation: 150 * mb,
     CpuPeriod: 100000,
     CpuQuota: 100000 * cpuPercent,
+    RestartPolicy: { "unless-stopped": true }
+    // Binds: 'Z' Will allow sharing volume.
   }
 
   const options = {
@@ -261,11 +272,10 @@ async function createContainer(containerName, imageName, containerPort) {
       // KernelMemory: 1000 * mb,
       // MemoryReservation: 250 * mb,
       CpuPeriod: 100000,
-      CpuQuota: 100000 * 0.8,
-      PortBindings: {  }
+      CpuQuota: 100000,
+      PortBindings: containerPortBindings
     }
   };
-  options.HostConfig.PortBindings['5000/tcp'] = [{ HostPort: port }];
 
   try {
     console.log(`Creating ${containerName} based off ${imageName} on Port ${port}!`)
@@ -357,8 +367,8 @@ async function updateContainers(branch) {
 
   containersToCreate = Object.keys(containersToCreate);
   for (let index = 0; index < containersToCreate.length; index++) {
-    const container = containersToCreate[index];
-    await createContainer(container, branch.tag, branch.names[container]);
+    const containerName = containersToCreate[index];
+    await createContainer(containerName, branch.tag, branch.names[containerName]);
   }
 
   console.log('Done Updating Containers!\n');
