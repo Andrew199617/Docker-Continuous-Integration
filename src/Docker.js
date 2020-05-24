@@ -32,9 +32,9 @@ const config = {
     names: {
       server: {
         '8082/tcp': [{ HostPort: '8082/tcp' }],
-        '6010/tcp': [{ HostPort: '172.31.18.195:80/tcp' }],
-        '6011/tcp': [{ HostPort: '172.31.30.198:80/tcp' }],
-        '6012/tcp': [{ HostPort: '0.0.0.0:443/tcp' }]
+        '6010/tcp': [{ HostPort: '"172.31.18.195:80/tcp"' }],
+        '6011/tcp': [{ HostPort: '"172.31.30.198:80/tcp"' }],
+        '6012/tcp': [{ HostPort: '"0.0.0.0:443/tcp"' }]
       }
     }
   }
