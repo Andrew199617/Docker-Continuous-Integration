@@ -244,7 +244,6 @@ async function createContainer(containerName, imageName, containerPortBindings) 
   const configInfo = getConfigForContainerName(containerName);
 
   const envVariables = configInfo ? configInfo.envVariables : [];
-  // const port = `${containerPort}/tcp`;
   const cpuPercent = 0.20;
   const mb = 1000000;
 
@@ -278,7 +277,7 @@ async function createContainer(containerName, imageName, containerPortBindings) 
   };
 
   try {
-    console.log(`Creating ${containerName} based off ${imageName} on Port ${port}!`)
+    console.log(`Creating ${containerName} based off ${imageName} with PortBindings ${containerPortBindings}!`)
     const newContainer = await docker.createContainer(options);
     await newContainer.start();
 
