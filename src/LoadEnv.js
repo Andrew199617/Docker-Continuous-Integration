@@ -30,7 +30,7 @@ function decrypt(str) {
 
 const localPath = path.join(process.cwd(), '.env');
 let localEnv = fs.readFileSync(localPath);
-localEnv = localEnv.toString();
+localEnv = localEnv.toString('hex');
 localEnv = decrypt(localEnv);
 localEnv = localEnv.split(/\n|\r\n/g);
 
@@ -54,7 +54,7 @@ const DevEnvVariables = [];
 
 const devPath = path.join(process.cwd(), 'dev.env');
 let devEnv = fs.readFileSync(devPath);
-devEnv = devEnv.toString();
+devEnv = devEnv.toString('hex');
 devEnv = decrypt(devEnv);
 devEnv = devEnv.split(/\n|\r\n/g);
 
@@ -62,7 +62,7 @@ const ReleaseEnvVariables = [];
 
 const releasePath = path.join(process.cwd(), 'release.env');
 let releaseEnv = fs.readFileSync(releasePath);
-releaseEnv = releaseEnv.toString();
+releaseEnv = releaseEnv.toString('hex');
 releaseEnv = decrypt(releaseEnv);
 releaseEnv = releaseEnv.split(/\n|\r\n/g);
 
