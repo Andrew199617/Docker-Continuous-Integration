@@ -101,6 +101,12 @@ async function removeContainer(id) {
   try {
     console.log('Removed Container:', id);
     await docker.getContainer(id).remove({ force: true });
+
+    for (const container in activeContainers) {
+      if(activeContainers[container].ImageID === id) {
+        delete activeContainers[container];
+      }
+    }
   }
   catch(err) {
     console.error(err);
@@ -170,6 +176,7 @@ function loadImages() {
         const imageInfo = images[index];
 
         if(!imageInfo.RepoTags) {
+          console.log('Removing Image without tags.');
           await removeImage(imageInfo.Id);
           continue;
         }
