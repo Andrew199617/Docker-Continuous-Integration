@@ -301,21 +301,21 @@ async function createContainer(containerName, imageName, containerPortBindings) 
     const newContainer = await docker.createContainer(options);
     await newContainer.start();
 
+    const timeout = 60 * 1000;
     var logOpts = {
       stdout: true,
       stderr: true,
-      follow: true
+      follow: true,
+      until: Date.now() + timeout
     };
     const stream = await newContainer.logs(logOpts);
     const succeeded = await new Promise((resolve, reject) => {
 
       function failed() {
         interval.unref();
-        stream.off('data', onData);
         resolve(false);
       }
 
-      const timeout = 60 * 1000;
       const interval = setTimeout(failed, timeout);
 
       function onData(data) {
@@ -329,8 +329,6 @@ async function createContainer(containerName, imageName, containerPortBindings) 
         // Container is ready.
         if(logLine.includes(configInfo.containerStartedText)) {
           interval.unref();
-          console.log(stream);
-          stream.off('data', onData);
           resolve(true);
         }
         else if(logLine.includes('Next Build Failed')) {
