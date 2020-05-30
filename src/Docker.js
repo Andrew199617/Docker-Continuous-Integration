@@ -329,6 +329,7 @@ async function createContainer(containerName, imageName, containerPortBindings) 
         // Container is ready.
         if(logLine.includes(configInfo.containerStartedText)) {
           interval.unref();
+          console.log(stream);
           stream.off('data', onData);
           resolve(true);
         }
