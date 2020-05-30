@@ -311,11 +311,11 @@ async function createContainer(containerName, imageName, containerPortBindings) 
 
       function failed() {
         interval.unref();
-        // stream.off('data', onData);
+        stream.off('data', onData);
         resolve(false);
       }
 
-      const timeout = 5 * 60 * 1000;
+      const timeout = 60 * 1000;
       const interval = setTimeout(failed, timeout);
 
       function onData(data) {
@@ -329,7 +329,7 @@ async function createContainer(containerName, imageName, containerPortBindings) 
         // Container is ready.
         if(logLine.includes(configInfo.containerStartedText)) {
           interval.unref();
-          // stream.off('data', onData);
+          stream.off('data', onData);
           resolve(true);
         }
         else if(logLine.includes('Next Build Failed')) {
@@ -351,7 +351,7 @@ async function createContainer(containerName, imageName, containerPortBindings) 
     }
   }
   catch (err) {
-    console.log('ERROR:', err);
+    console.error('ERROR:', err.message);
   }
 }
 
