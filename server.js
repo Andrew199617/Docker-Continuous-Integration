@@ -24,6 +24,13 @@ async function initializeDocker() {
 
         const body = JSON.parse(chunk);
 
+        if(typeof body.repository === 'undefined' || !body.repository) {
+          console.error('Invalid Body sent!');
+          res.statusCode = 404;
+          res.end();
+          return;
+        }
+
         if(body.repository.name !== REPO_NAME) {
           console.error('Wrong repo name! Actual:', body.repository.name, 'Expected:', REPO_NAME);
           res.statusCode = 404;
