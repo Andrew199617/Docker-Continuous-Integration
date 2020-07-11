@@ -276,7 +276,7 @@ async function createContainer(containerName, imageName, containerPortBindings) 
     MemoryReservation: 150 * mb,
     CpuPeriod: 100000,
     CpuQuota: 100000 * cpuPercent,
-    RestartPolicy: { "unless-stopped": true }
+    RestartPolicy: { Name: "unless-stopped" }
   }
 
   const options = {
