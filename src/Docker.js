@@ -11,8 +11,8 @@ const config = {
     tag: `${process.env.DOCKER_USERNAME}/lgd:latest-dev`,
     names: {
       dev0: { '5000/tcp': [{ HostPort: '6006/tcp' }] },
-      dev1: { '5000/tcp': [{ HostPort: '6007/tcp' }] },
-      dev2: { '5000/tcp': [{ HostPort: '6008/tcp' }] }
+      dev1: { '5000/tcp': [{ HostPort: '6007/tcp' }] }
+      // dev2: { '5000/tcp': [{ HostPort: '6008/tcp' }] }
     },
     containerStartedText: 'LGD is running on port',
     envVariables: EnvVariables.DevEnvVariables
@@ -22,9 +22,9 @@ const config = {
     names: {
       lgd0: { '5000/tcp': [{ HostPort: '6001/tcp' }] },
       lgd1: { '5000/tcp': [{ HostPort: '6002/tcp' }] },
-      lgd2: { '5000/tcp': [{ HostPort: '6003/tcp' }] },
-      lgd3: { '5000/tcp': [{ HostPort: '6004/tcp' }] },
-      lgd4: { '5000/tcp': [{ HostPort: '6005/tcp' }] }
+      lgd2: { '5000/tcp': [{ HostPort: '6003/tcp' }] }
+      // lgd3: { '5000/tcp': [{ HostPort: '6004/tcp' }] },
+      // lgd4: { '5000/tcp': [{ HostPort: '6005/tcp' }] }
     },
     containerStartedText: 'LGD is running on port',
     envVariables: EnvVariables.ReleaseEnvVariables
