@@ -431,11 +431,14 @@ async function pullImage(tag) {
         docker.modem.followProgress(stream, onFinished, onProgress);
       }
       else {
-        docker.modem.followProgress(stream, onFinished, event => {
-          if(event.status && event.status.includes('Image is up to date for')) {
-            pulledNew = false;
-          }
-        });
+        docker.modem.followProgress(stream, onFinished, checkUpToDate);
+      }
+
+      function checkUpToDate(event) {
+        if(event.status && event.status.includes('Image is up to date for')) {
+          console.log('Image Already up to date.');
+          pulledNew = false;
+        }
       }
 
       function onFinished(err, output) {
@@ -448,9 +451,7 @@ async function pullImage(tag) {
       const compoundOutput = Object.keys(lastLogs);
 
       function onProgress(event) {
-        if(event.status && event.status.includes('Image is up to date for')) {
-          pulledNew = false;
-        }
+        checkUpToDate(event);
 
         if(event.progress) {
           if(compoundOutput.includes(event.status)) {
