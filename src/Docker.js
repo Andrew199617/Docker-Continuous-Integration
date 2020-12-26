@@ -264,7 +264,7 @@ async function createContainer(containerName, imageName, containerPortBindings) 
   const configInfo = getConfigForContainerName(containerName);
 
   const envVariables = configInfo ? configInfo.envVariables : [];
-  const cpuPercent = 0.22;
+  const cpuPercent = 0.33;
   const mb = 1000000;
 
   // We need more process power when we build next.js
