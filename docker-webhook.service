@@ -1,0 +1,4 @@
+[Service]
+ExecStart=/home/ubuntu/Docker-Continuous-Integration/run.sh
+Restart=on-failure
+WorkingDirectory=/home/ubuntu/Docker-Continuous-Integration

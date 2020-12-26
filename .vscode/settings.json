@@ -1,10 +1,5 @@
 // Place your settings in this file to overwrite default and user settings.
 {
-    // Quickly document code.
-    "docthis.includeMemberOfOnClassMembers": false,
-    "docthis.includeDescriptionTag": true,
-    "docthis.includeMemberOfOnInterfaceMembers": false,
-
     // Editor settings.
     "editor.snippetSuggestions": "inline",
     "editor.wordWrap": "on",
@@ -33,12 +28,6 @@
         "maintainHierarchy": true
     },
 
-    // How we compile our less files.
-    "less.compile": {
-        "compress":  true,  // true => remove surplus whitespace
-        "sourceMap": false,  // true => generate source maps (.css.map files)
-        "main": ["${workspaceRoot}\\styles\\Main.less"]
-    },
     "terminal.integrated.shell.windows": "C:\\Windows\\Sysnative\\cmd.exe",
     // Useful for finding problems in log files quickly.
     "logFileHighlighter.customPatterns": [

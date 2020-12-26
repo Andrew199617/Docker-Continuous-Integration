@@ -1,15 +1,20 @@
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
+const LogLevels = require('./LogLevels');
 
 let iv = null;
 let key = null;
+process.env.shouldLog = LogLevels.DEBUG;
 for(let i = 2; i < process.argv.length; ++i) {
   if(process.argv[i].includes('-key')) {
     key = process.argv[i + 1];
   }
   else if(process.argv[i].includes('-iv')) {
     iv = process.argv[i + 1];
+  }
+  else if(process.argv[i].includes('--logs')) {
+    process.env.logLevel = process.argv[i + 1];
   }
 }
 
@@ -19,11 +24,6 @@ if(!key || !iv) {
 }
 
 function decrypt(str) {
-  // const cipher = crypto.createCipheriv('aes-256-gcm', key, iv)
-  // let encrypted = cipher.update(str, 'utf-8', 'hex');
-  // encrypted += cipher.final('hex');
-  // console.log('Encrypted:', encrypted);
-
   const decipher = crypto.createDecipheriv('aes-256-gcm', key, iv)
   return decipher.update(str.trim(), 'hex', 'utf8');
 }

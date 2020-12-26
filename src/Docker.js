@@ -2,6 +2,7 @@ const Docker = require('dockerode');
 const docker = new Docker();
 
 const EnvVariables = require('./LoadEnv');
+const LogLevels = require('./LogLevels');
 
 /**
  * @description Info for creating containers.
@@ -10,8 +11,8 @@ const config = {
   dev: {
     tag: `${process.env.DOCKER_USERNAME}/lgd:latest-dev`,
     names: {
-      dev0: { '5000/tcp': [{ HostPort: '6006/tcp' }] },
-      dev1: { '5000/tcp': [{ HostPort: '6007/tcp' }] }
+      dev0: { '5000/tcp': [{ HostPort: '6006/tcp' }] }
+      // dev1: { '5000/tcp': [{ HostPort: '6007/tcp' }] }
       // dev2: { '5000/tcp': [{ HostPort: '6008/tcp' }] }
     },
     containerStartedText: 'LGD is running on port',
@@ -20,9 +21,9 @@ const config = {
   master: {
     tag: `${process.env.DOCKER_USERNAME}/lgd:release`,
     names: {
-      lgd0: { '5000/tcp': [{ HostPort: '6001/tcp' }] },
-      lgd1: { '5000/tcp': [{ HostPort: '6002/tcp' }] },
-      lgd2: { '5000/tcp': [{ HostPort: '6003/tcp' }] }
+      lgd0: { '5000/tcp': [{ HostPort: '6001/tcp' }] }
+      // lgd1: { '5000/tcp': [{ HostPort: '6002/tcp' }] },
+      // lgd2: { '5000/tcp': [{ HostPort: '6003/tcp' }] }
       // lgd3: { '5000/tcp': [{ HostPort: '6004/tcp' }] },
       // lgd4: { '5000/tcp': [{ HostPort: '6005/tcp' }] }
     },
@@ -426,7 +427,16 @@ async function pullImage(tag) {
       }
 
       console.log('Pulling with tag:', tag);
-      docker.modem.followProgress(stream, onFinished, onProgress);
+      if(process.env.logLevel === LogLevels.DEBUG) {
+        docker.modem.followProgress(stream, onFinished, onProgress);
+      }
+      else {
+        docker.modem.followProgress(stream, onFinished, event => {
+          if(event.status && event.status.includes('Image is up to date for')) {
+            pulledNew = false;
+          }
+        });
+      }
 
       function onFinished(err, output) {
         console.log('Pull Complete!\n');
