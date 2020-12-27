@@ -22,7 +22,17 @@ async function initializeDocker() {
     .createServer((req, res) => {
       req.on('data', chunk => {
 
-        const body = JSON.parse(chunk);
+        let body = null;
+        try {
+          body = JSON.parse(chunk);
+        }
+        catch(err) {
+          console.error('Invalid Body sent!');
+          console.error(err);
+          res.statusCode = 404;
+          res.end();
+          return;
+        }
 
         if(typeof body.repository === 'undefined' || !body.repository) {
           console.error('Invalid Body sent!');
