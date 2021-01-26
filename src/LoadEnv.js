@@ -88,6 +88,9 @@ function ParseEnvFile(envFile, array) {
 ParseEnvFile(devEnv, DevEnvVariables);
 ParseEnvFile(releaseEnv, ReleaseEnvVariables);
 
+ReleaseEnvVariables.push('LGD_ENV=production');
+DevEnvVariables.push('LGD_ENV=dev');
+
 module.exports = {
   DevEnvVariables,
   ReleaseEnvVariables
