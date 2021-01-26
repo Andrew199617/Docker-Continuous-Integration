@@ -11,5 +11,5 @@ function encrypt(str) {
   return cipher.update(str.trim(), 'utf8', 'hex');
 }
 
-fs.writeFileSync(path.join(__dirname, '../release.env'), encrypt(releaseEnv.toString()));
-fs.writeFileSync(path.join(__dirname, '../dev.env'), encrypt(devEnv.toString()));
+fs.writeFileSync(path.join(__dirname, '../release.env'), encrypt(releaseEnv.toString()).toString());
+fs.writeFileSync(path.join(__dirname, '../dev.env'), encrypt(devEnv.toString()).toString());
