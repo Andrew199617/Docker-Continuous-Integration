@@ -8,11 +8,13 @@ function decrypt(str) {
   return decipher.update(str.trim(), 'hex', 'utf8');
 }
 
+console.log('Getting Local Env.');
 const localPath = path.join(process.cwd(), '.env');
 let localEnv = fs.readFileSync(localPath);
 localEnv = localEnv.toString();
 localEnv = decrypt(localEnv);
 localEnv = localEnv.split(/\n|\r\n/g);
+console.log('Got Local Env.');
 
 loop:
 for (let index = 0; index < localEnv.length; index++) {
@@ -32,19 +34,23 @@ for (let index = 0; index < localEnv.length; index++) {
 
 const DevEnvVariables = [];
 
+console.log('Getting Dev Env.');
 const devPath = path.join(process.cwd(), 'dev.env');
 let devEnv = fs.readFileSync(devPath);
 devEnv = devEnv.toString();
 devEnv = decrypt(devEnv);
 devEnv = devEnv.split(/\n|\r\n/g);
+console.log('Got Dev Env.');
 
 const ReleaseEnvVariables = [];
 
+console.log('Getting Release Env.');
 const releasePath = path.join(process.cwd(), 'release.env');
 let releaseEnv = fs.readFileSync(releasePath);
 releaseEnv = releaseEnv.toString();
 releaseEnv = decrypt(releaseEnv);
 releaseEnv = releaseEnv.split(/\n|\r\n/g);
+console.log('Got Release Env.');
 
 function ParseEnvFile(envFile, array) {
   loop:
