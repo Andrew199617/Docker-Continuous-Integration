@@ -399,15 +399,7 @@ async function updateContainers(branch) {
  * @param {string} tag
  */
 async function pullImage(tag) {
-  let branch = null;
-  for(let i = 0; i < configKeys.length; ++i) {
-    if(config[configKeys[i]].tag === tag
-      || config[configKeys[i]].tag === `${process.env.DOCKER_USERNAME}/${tag}`
-      || config[configKeys[i]].tag === `${process.env.DOCKER_USERNAME}/lgd:${tag}`) {
-      branch = config[configKeys[i]];
-      break;
-    }
-  }
+  branch = GetBranchFromTag(tag);
 
   if(!branch) {
     console.error(`Could not find tag: ${tag}!`);
@@ -417,6 +409,22 @@ async function pullImage(tag) {
   let pulledNew = true;
   await new Promise((resolve, reject) => {
     docker.pull(branch.tag, { authconfig: auth }, function (err, stream) {
+      function checkUpToDate(event) {
+        if(event.status && event.status.includes('Image is up to date for')) {
+          console.log('Image Already up to date.');
+          pulledNew = false;
+        }
+      }
+
+      function onFinished(err, output) {
+        if(err) {
+          console.error(err);
+        }
+
+        console.log('Pull Complete!\n', output);
+        resolve();
+      }
+
       if(err) {
         console.error(err);
         pulledNew = false;
@@ -432,18 +440,6 @@ async function pullImage(tag) {
         docker.modem.followProgress(stream, onFinished, checkUpToDate);
       }
 
-      function checkUpToDate(event) {
-        if(event.status && event.status.includes('Image is up to date for')) {
-          console.log('Image Already up to date.');
-          pulledNew = false;
-        }
-      }
-
-      function onFinished(err, output) {
-        console.log('Pull Complete!\n');
-        resolve();
-      }
-
       let lastLineWasProgress = false;
       const lastLogs = { Downloading: '', Extracting: '' };
       const compoundOutput = Object.keys(lastLogs);
@@ -451,36 +447,36 @@ async function pullImage(tag) {
       function onProgress(event) {
         checkUpToDate(event);
 
-        if(event.progress) {
-          if(compoundOutput.includes(event.status)) {
-            if(lastLineWasProgress) {
-              console.clear();
-              console.log('Pulling from', tag);
+        if(!event.progress) {
+          lastLineWasProgress = false;
+          console.log(event.status);
+          return;
+        }
+
+        if(compoundOutput.includes(event.status)) {
+          if(lastLineWasProgress) {
+            console.clear();
+            console.log('Pulling from', tag);
+          }
+
+          let output = '';
+          for (let i = 0; i < compoundOutput.length; i++) {
+            if(event.status === compoundOutput[i]){
+              output += `${event.status} ${event.progress}`;
+              lastLogs[event.status] = `${event.status} ${event.progress}`;
+            }
+            else {
+              output += lastLogs[compoundOutput[i]] || compoundOutput[i];
             }
 
-            let output = '';
-            for (let i = 0; i < compoundOutput.length; i++) {
-              if(event.status === compoundOutput[i]){
-                output += `${event.status} ${event.progress}`;
-                lastLogs[event.status] = `${event.status} ${event.progress}`;
-              }
-              else {
-                output += lastLogs[compoundOutput[i]] || compoundOutput[i];
-              }
-
-              output += i === 0 ? '\n' : '';
-            }
-
-            console.log(output);
-            lastLineWasProgress = true;
+            output += i === 0 ? '\n' : '';
           }
-          else {
-            throw new Error('Only Download/Extracting have progress.');
-          }
+
+          console.log(output);
+          lastLineWasProgress = true;
         }
         else {
-          lastLineWasProgress = false;
-          console.log(event.status)
+          throw new Error('Only Download/Extracting have progress.');
         }
       }
     });
@@ -493,6 +489,19 @@ async function pullImage(tag) {
   }
 
   return pulledNew;
+}
+
+function GetBranchFromTag(tag) {
+  let branch = null;
+  for (let i = 0; i < configKeys.length; ++i) {
+    if (config[configKeys[i]].tag === tag
+      || config[configKeys[i]].tag === `${process.env.DOCKER_USERNAME}/${tag}`
+      || config[configKeys[i]].tag === `${process.env.DOCKER_USERNAME}/lgd:${tag}`) {
+      branch = config[configKeys[i]];
+      break;
+    }
+  }
+  return branch;
 }
 
 /**
@@ -515,7 +524,7 @@ async function pullImages() {
 }
 
 async function initialize() {
-  console.log('Initalizing Docker Containers/Images!');
+  console.log('Initializing Docker Containers/Images!');
   const pulledNew = await pullImages();
   if(!pulledNew) {
     await loadContainers();
