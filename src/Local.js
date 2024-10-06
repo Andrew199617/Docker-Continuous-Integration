@@ -1,4 +1,5 @@
 const Docker = require('./Docker');
+const { pull } = require('./Node/ProcessArguments');
 
 let timeout = 2000;
 const maxTimeout = 30000;
@@ -23,7 +24,7 @@ async function execute(pulledNew) {
 }
 
 async function run() {
-  if(process.argv[3] && process.argv[3] === '-p') {
+  if(pull) {
     await Docker.pullImages();
   }
 

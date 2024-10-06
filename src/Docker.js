@@ -15,7 +15,7 @@ const config = {
       // dev1: { '5000/tcp': [{ HostPort: '6007/tcp' }] }
       // dev2: { '5000/tcp': [{ HostPort: '6008/tcp' }] }
     },
-    containerStartedText: 'LGD is running on port',
+    containerStartedText: 'LGD latest-dev is running on port',
     envVariables: EnvVariables.DevEnvVariables
   },
   master: {
@@ -27,7 +27,7 @@ const config = {
       // lgd3: { '5000/tcp': [{ HostPort: '6004/tcp' }] },
       // lgd4: { '5000/tcp': [{ HostPort: '6005/tcp' }] }
     },
-    containerStartedText: 'LGD is running on port',
+    containerStartedText: 'LGD release is running on port',
     envVariables: EnvVariables.ReleaseEnvVariables
   },
   server: {
