@@ -453,31 +453,30 @@ async function pullImage(tag) {
           return;
         }
 
-        if(compoundOutput.includes(event.status)) {
-          if(lastLineWasProgress) {
-            console.clear();
-            console.log('Pulling from', tag);
-          }
-
-          let output = '';
-          for (let i = 0; i < compoundOutput.length; i++) {
-            if(event.status === compoundOutput[i]){
-              output += `${event.status} ${event.progress}`;
-              lastLogs[event.status] = `${event.status} ${event.progress}`;
-            }
-            else {
-              output += lastLogs[compoundOutput[i]] || compoundOutput[i];
-            }
-
-            output += i === 0 ? '\n' : '';
-          }
-
-          console.log(output);
-          lastLineWasProgress = true;
-        }
-        else {
+        if(!compoundOutput.includes(event.status)) {
           throw new Error('Only Download/Extracting have progress.');
         }
+
+        if(lastLineWasProgress) {
+          console.clear();
+          console.log('Pulling from', tag);
+        }
+
+        let output = '';
+        for (let i = 0; i < compoundOutput.length; i++) {
+          if(event.status === compoundOutput[i]){
+            output += `${event.status} ${event.progress}`;
+            lastLogs[event.status] = `${event.status} ${event.progress}`;
+          }
+          else {
+            output += lastLogs[compoundOutput[i]] || compoundOutput[i];
+          }
+
+          output += i === 0 ? '\n' : '';
+        }
+
+        console.log(output);
+        lastLineWasProgress = true;
       }
     });
   });
