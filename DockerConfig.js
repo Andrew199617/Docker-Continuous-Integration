@@ -1,3 +1,4 @@
+const EnvVariables = require('./src/LoadEnv');
 
 /**
  * @description Info for creating containers.

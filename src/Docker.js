@@ -1,7 +1,6 @@
 const Docker = require('dockerode');
 const docker = new Docker();
 
-const EnvVariables = require('./LoadEnv');
 const LogLevels = require('./LogLevels');
 const { config } = require('../DockerConfig.js');
 
