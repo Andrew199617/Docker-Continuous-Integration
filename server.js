@@ -1,5 +1,8 @@
 const http = require('http');
 const Docker = require('./src/Docker');
+const { local } = require('./src/Node/ProcessArguments');
+
+const runLocal = require('./src/Local');
 
 require('./src/LoadEnv');
 
@@ -10,9 +13,8 @@ const REPO_NAME = 'lgd';
 
 async function initializeDocker() {
 
-  if(process.argv[2]
-    && (process.argv[2] === 'local' || process.argv[2] === '-l')) {
-    await require('./src/Local')();
+  if(local) {
+    await runLocal();
   }
   else {
     await Docker.initialize();
