@@ -12,10 +12,7 @@ async function execute(pulledNew) {
   const newImageAdded = await Docker.loadImages();
   if(newImageAdded || pulledNew) {
     timeout = 2000;
-    const configKeys = Object.keys(Docker.config);
-    for(let i = 0; i < configKeys.length; ++i) {
-      await Docker.updateContainers(Docker.config[configKeys[i]]);
-    }
+    await Docker.updateContainers();
   }
 
   console.log('Checking for new Images/Containers in', timeout);

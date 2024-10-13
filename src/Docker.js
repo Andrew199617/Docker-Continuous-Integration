@@ -311,10 +311,19 @@ async function createContainer(containerName, imageName, containerPortBindings) 
 }
 
 /**
- * @description Remove all containers for a tag and create them again.
+* @description Remove all containers for all tags and create them again.
+*/
+async function updateContainers() {
+  for(let i = 0; i < configKeys.length; ++i) {
+    await updateContainer(config[configKeys[i]]);
+  }
+}
+
+/**
+ * @description Remove all containers for a tag that aren't up to date and create them again.
  * @param {{ tag: string, names: { [key: string]: number } }} branch
  */
-async function updateContainers(branch) {
+async function updateContainer(branch) {
   if(typeof activeImages[branch.tag] === 'undefined') {
     console.log(`Updating Containers for ${branch.tag}!`);
     console.log(`Image ${branch.tag} did not exist!`);
@@ -441,7 +450,7 @@ async function pullImage(tag) {
   if(pulledNew) {
     await loadContainers();
     await loadImages();
-    await updateContainers(branch);
+    await updateContainer(branch);
   }
 
   return pulledNew;
@@ -486,7 +495,7 @@ async function initialize() {
   if(!pulledNew) {
     await loadContainers();
     await loadImages();
-    await updateContainers(branch);
+    await updateContainers();
   }
 }
 
@@ -496,6 +505,6 @@ module.exports = {
   pullImages,
   loadImages,
   loadContainers,
-  updateContainers,
-  config
+  updateContainer,
+  updateContainers
 }
