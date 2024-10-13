@@ -81,6 +81,7 @@ function loadContainers() {
         return;
       }
 
+      activeContainers = [];
       for (let index = 0; index < containers.length; index++) {
         const containerInfo = containers[index];
         if(containerInfo.State === States.Exited) {
@@ -485,6 +486,7 @@ async function initialize() {
   if(!pulledNew) {
     await loadContainers();
     await loadImages();
+    await updateContainers(branch);
   }
 }
 
