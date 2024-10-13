@@ -300,7 +300,7 @@ async function createContainer(containerName, imageName, containerPortBindings) 
     const newContainer = await docker.createContainer(options);
     await newContainer.start();
 
-    const timeout = 60 * 1000;
+    const timeout = 20 * 1000;
     var logOpts = {
       stdout: true,
       stderr: true,
