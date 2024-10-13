@@ -497,6 +497,9 @@ async function initialize() {
     await loadImages();
     await updateContainers();
   }
+  else {
+    await updateContainers();
+  }
 }
 
 module.exports = {

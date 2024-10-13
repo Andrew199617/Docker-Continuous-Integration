@@ -30,11 +30,14 @@ const config = {
     tag: `${process.env.DOCKER_USERNAME}/lgd:server`,
     names: {
       server: {
+        // Server for generating certs.
         '8082/tcp': [{ HostIp: '172.31.18.195', HostPort: '8082/tcp' }],
+        // Release
         '6010/tcp': [{ HostIp: '172.31.18.195', HostPort: '80/tcp' }],
+        '6012/tcp': [{ HostIp: '172.31.18.195', HostPort: '443/tcp' }],
+        // Dev
         '6011/tcp': [{ HostIp: '[2600:1f14:1a8e:7702:6d4b:65a6:c609:4e06]', HostPort: '80/tcp' }],
-        '6013/tcp': [{ HostIp: '[2600:1f14:1a8e:7702:6d4b:65a6:c609:4e06]', HostPort: '443/tcp' }],
-        '6012/tcp': [{ HostIp: '172.31.18.195', HostPort: '443/tcp' }]
+        '6013/tcp': [{ HostIp: '[2600:1f14:1a8e:7702:6d4b:65a6:c609:4e06]', HostPort: '443/tcp' }]
       }
     },
     volumeBinds: [
