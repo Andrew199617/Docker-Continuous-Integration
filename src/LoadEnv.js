@@ -30,6 +30,7 @@ for (let index = 0; index < localEnv.length; index++) {
   const key = localEnv[index].replace(/=.*/, '');
   const value = localEnv[index].replace(/.*=/, '');
   process.env[key.trim()] = value.trim();
+  console.log(`Got process key: ${key.trim()}`);
 }
 
 const DevEnvVariables = [];

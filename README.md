@@ -28,7 +28,7 @@ const KEY = new Buffer(crypto.randomBytes(32), 'utf8');
 You can also use whatever you want and can remember because it will be easier to start program later.
 
 # Args
-examples: -key sadm -iv hgfd -l -p
+examples: node server.js -key sadm -iv hgfd -l -p
 Generate key doing const IV = new Buffer(crypto.randomBytes(12), 'utf8');
 Save this IV and pass it to generate the .env file.
 

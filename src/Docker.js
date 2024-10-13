@@ -355,7 +355,7 @@ async function updateContainers(branch) {
  * @param {string} tag
  */
 async function pullImage(tag) {
-  branch = GetBranchFromTag(tag);
+  let branch = GetBranchFromTag(tag);
 
   if(!branch) {
     console.error(`Could not find tag: ${tag}!`);
@@ -456,6 +456,7 @@ function GetBranchFromTag(tag) {
       break;
     }
   }
+
   return branch;
 }
 
